@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Web Developer | 3D Portfolio</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Three.js for 3D Background -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['"Space Grotesk"', 'sans-serif'] },
+                    colors: {
+                        darkBg: '#050505',
+                        brandBlue: '#3b82f6',
+                        brandPurple: '#8b5cf6'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #050505; color: #ffffff; overflow-x: hidden; }
+        .glass-panel { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .glass-panel:hover { border: 1px solid rgba(139, 92, 246, 0.5); transform: translateY(-5px); transition: all 0.3s ease; }
+        .gradient-text { background: linear-gradient(90deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        #webgl-container { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; }
+        
+        /* Language specific styling */
+        .rtl { direction: rtl; }
+    </style>
+</head>
+<body class="antialiased selection:bg-brandPurple selection:text-white">
+
+    <!-- 3D Canvas -->
+    <div id="webgl-container"></div>
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 glass-panel border-b-0 py-4 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold tracking-tighter hover:opacity-80">Dev<span class="gradient-text">Studio</span>.</a>
+            
+            <div class="hidden md:flex space-x-8 items-center">
+                <a href="#home" class="text-sm text-gray-300 hover:text-white transition i18n" data-key="nav_home">Home</a>
+                <a href="#services" class="text-sm text-gray-300 hover:text-white transition i18n" data-key="nav_services">Services</a>
+                <a href="#pricing" class="text-sm text-gray-300 hover:text-white transition i18n" data-key="nav_pricing">Pricing</a>
+                
+                <!-- Language Switcher -->
+                <select id="lang-switcher" class="bg-transparent border border-gray-700 text-white text-sm rounded-md py-1 px-2 focus:outline-none focus:border-brandPurple cursor-pointer bg-darkBg">
+                    <option value="en">🇺🇸 EN</option>
+                    <option value="fr">🇫🇷 FR</option>
+                    <option value="de">🇩🇪 DE</option>
+                    <option value="ja">🇯🇵 JA</option>
+                    <option value="hi">🇮🇳 HI</option>
+                    <option value="ar">🇦🇪 AR</option>
+                </select>
+
+                <!-- Login Button -->
+                <button onclick="toggleLoginModal()" class="bg-white/10 hover:bg-white/20 border border-white/10 px-5 py-2 rounded-full text-sm font-semibold transition flex items-center gap-2">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="currentColor" d="M12 11.5v3h5.24c-.25 1.4-1.9 4.15-5.24 4.15-3.15 0-5.7-2.6-5.7-5.8s2.55-5.8 5.7-5.8c1.8 0 3.05.8 3.75 1.45l2.4-2.4C16.5 4.6 14.4 3.7 12 3.7 7.4 3.7 3.7 7.4 3.7 12s3.7 8.3 8.3 8.3c4.8 0 7.95-3.4 7.95-8.1 0-.55-.05-1.1-.15-1.65H12z"/></svg>
+                    <span class="i18n" data-key="nav_login">Login</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative h-screen flex items-center justify-center pt-20">
+        <div class="text-center px-6 max-w-4xl">
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight i18n" data-key="hero_title">
+                Building <span class="gradient-text">Immersive</span> Digital Realities
+            </h1>
+            <p class="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl mx-auto i18n" data-key="hero_sub">
+                Expert full-stack development & 3D UI/UX design for international brands. Elevate your web presence today.
+            </p>
+            <a href="#order" class="inline-block bg-gradient-to-r from-brandBlue to-brandPurple text-white px-8 py-4 rounded-full font-bold text-lg hover:shadow-[0_0_20px_rgba(139,92,246,0.5)] transition-all i18n" data-key="hero_cta">
+                Start Your Project
+            </a>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-24 bg-darkBg/80 relative z-10">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-3xl md:text-5xl font-bold mb-16 text-center i18n" data-key="services_title">My Expertise</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Card 1 -->
+                <div class="glass-panel p-8 rounded-2xl">
+                    <div class="text-brandBlue text-4xl mb-4">🚀</div>
+                    <h3 class="text-xl font-bold mb-2 i18n" data-key="srv_1_title">Landing Pages</h3>
+                    <p class="text-gray-400 text-sm i18n" data-key="srv_1_desc">High-converting, ultra-fast landing pages tailored to your brand.</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="glass-panel p-8 rounded-2xl">
+                    <div class="text-brandPurple text-4xl mb-4">🛒</div>
+                    <h3 class="text-xl font-bold mb-2 i18n" data-key="srv_2_title">E-Commerce</h3>
+                    <p class="text-gray-400 text-sm i18n" data-key="srv_2_desc">Scalable online stores with seamless payment gateway integrations.</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="glass-panel p-8 rounded-2xl">
+                    <div class="text-brandBlue text-4xl mb-4">⚙️</div>
+                    <h3 class="text-xl font-bold mb-2 i18n" data-key="srv_3_title">Custom Web Apps</h3>
+                    <p class="text-gray-400 text-sm i18n" data-key="srv_3_desc">Complex full-stack applications with robust backend architectures.</p>
+                </div>
+                <!-- Card 4 -->
+                <div class="glass-panel p-8 rounded-2xl">
+                    <div class="text-brandPurple text-4xl mb-4">🧊</div>
+                    <h3 class="text-xl font-bold mb-2 i18n" data-key="srv_4_title">3D Portfolios</h3>
+                    <p class="text-gray-400 text-sm i18n" data-key="srv_4_desc">Interactive WebGL & Three.js experiences that stand out.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="py-24 relative z-10">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-3xl md:text-5xl font-bold mb-16 text-center i18n" data-key="pricing_title">Transparent Pricing</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Basic -->
+                <div class="glass-panel p-10 rounded-2xl flex flex-col">
+                    <h3 class="text-2xl font-bold mb-2 i18n" data-key="tier_1_name">Basic</h3>
+                    <div class="text-4xl font-bold mb-6">$199</div>
+                    <ul class="text-gray-400 space-y-4 mb-8 flex-1">
+                        <li>✓ 1-Page Landing Page</li>
+                        <li>✓ Responsive Design</li>
+                        <li>✓ Contact Form Setup</li>
+                        <li>✓ 3 Days Delivery</li>
+                    </ul>
+                    <a href="#order" class="block text-center border border-white/20 hover:bg-white/10 py-3 rounded-xl transition i18n" data-key="tier_btn">Select Plan</a>
+                </div>
+                
+                <!-- Standard -->
+                <div class="glass-panel p-10 rounded-2xl flex flex-col border-brandPurple/50 relative transform md:-translate-y-4 shadow-[0_0_30px_rgba(139,92,246,0.1)]">
+                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-brandBlue to-brandPurple text-xs font-bold px-3 py-1 rounded-full i18n" data-key="tier_2_badge">MOST POPULAR</div>
+                    <h3 class="text-2xl font-bold mb-2 i18n" data-key="tier_2_name">Standard</h3>
+                    <div class="text-4xl font-bold mb-6">$599</div>
+                    <ul class="text-gray-400 space-y-4 mb-8 flex-1">
+                        <li>✓ Multi-page Website (Up to 5)</li>
+                        <li>✓ CMS / Basic E-commerce</li>
+                        <li>✓ SEO Optimization</li>
+                        <li>✓ 1 Week Delivery</li>
+                    </ul>
+                    <a href="#order" class="block text-center bg-gradient-to-r from-brandBlue to-brandPurple hover:shadow-lg py-3 rounded-xl transition i18n" data-key="tier_btn">Select Plan</a>
+                </div>
+
+                <!-- Premium -->
+                <div class="glass-panel p-10 rounded-2xl flex flex-col">
+                    <h3 class="text-2xl font-bold mb-2 i18n" data-key="tier_3_name">Premium</h3>
+                    <div class="text-4xl font-bold mb-6">$1199</div>
+                    <ul class="text-gray-400 space-y-4 mb-8 flex-1">
+                        <li>✓ Custom Full-Stack Web App</li>
+                        <li>✓ 3D / Three.js Integrations</li>
+                        <li>✓ User Authentication System</li>
+                        <li>✓ Premium 24/7 Support</li>
+                    </ul>
+                    <a href="#order" class="block text-center border border-white/20 hover:bg-white/10 py-3 rounded-xl transition i18n" data-key="tier_btn">Select Plan</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Order / Contact Page -->
+    <section id="order" class="py-24 bg-darkBg/80 relative z-10 border-t border-white/5">
+        <div class="max-w-3xl mx-auto px-6">
+            <div class="glass-panel p-10 md:p-14 rounded-3xl">
+                <h2 class="text-3xl md:text-4xl font-bold mb-2 i18n" data-key="form_title">Initiate Protocol</h2>
+                <p class="text-gray-400 mb-8 i18n" data-key="form_sub">Fill out your project details. Let's build something extraordinary.</p>
+                
+                <form id="orderForm" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2 i18n" data-key="lbl_name">Name</label>
+                            <input type="text" id="name" required class="w-full bg-black/50 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brandPurple transition">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2 i18n" data-key="lbl_email">Email</label>
+                            <input type="email" id="email" required class="w-full bg-black/50 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brandPurple transition">
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2 i18n" data-key="lbl_type">Project Type</label>
+                            <select id="projectType" class="w-full bg-black/50 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brandPurple transition">
+                                <option>Landing Page</option>
+                                <option>E-commerce</option>
+                                <option>Custom Web App</option>
+                                <option>3D Portfolio</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2 i18n" data-key="lbl_budget">Budget Tier</label>
+                            <select id="budget" class="w-full bg-black/50 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brandPurple transition">
+                                <option>$199 - Basic</option>
+                                <option>$599 - Standard</option>
+                                <option>$1199 - Premium</option>
+                                <option>Custom (> $1500)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-2 i18n" data-key="lbl_details">Project Details</label>
+                        <textarea id="details" rows="4" required class="w-full bg-black/50 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brandPurple transition"></textarea>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="w-full bg-gradient-to-r from-brandBlue to-brandPurple text-white font-bold py-4 rounded-xl hover:opacity-90 transition i18n" data-key="btn_submit">
+                        Submit Order
+                    </button>
+                    <p id="formStatus" class="text-center text-sm mt-4 hidden"></p>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Google Login Portal Modal (Simulated) -->
+    <div id="loginModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/80 backdrop-blur-sm">
+        <div class="glass-panel p-10 rounded-3xl w-[90%] max-w-md relative text-center">
+            <button onclick="toggleLoginModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white">✕</button>
+            <h2 class="text-2xl font-bold mb-2">Client Portal</h2>
+            <p class="text-gray-400 text-sm mb-8">Sign in to view your invoices and project milestones.</p>
+            
+            <button id="googleLoginBtn" class="w-full bg-white text-black font-semibold py-3 rounded-xl flex items-center justify-center gap-3 hover:bg-gray-200 transition">
+                <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="currentColor" d="M12 11.5v3h5.24c-.25 1.4-1.9 4.15-5.24 4.15-3.15 0-5.7-2.6-5.7-5.8s2.55-5.8 5.7-5.8c1.8 0 3.05.8 3.75 1.45l2.4-2.4C16.5 4.6 14.4 3.7 12 3.7 7.4 3.7 3.7 7.4 3.7 12s3.7 8.3 8.3 8.3c4.8 0 7.95-3.4 7.95-8.1 0-.55-.05-1.1-.15-1.65H12z"/></svg>
+                Continue with Google
+            </button>
+            <p class="mt-6 text-xs text-gray-500">Firebase OAuth integration required for production.</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // ==========================================
+        // 1. Google App Script Submission Logic
+        // ==========================================
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbw6QsNQhcPaWGmkL0-gyO3afyVm6wVaJqlFRn8ba720nL6NhxwefbO25D2qFXdKygvO/exec'; // <-- PASTE APP SCRIPT URL HERE
+        const form = document.getElementById('orderForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const formStatus = document.getElementById('formStatus');
+
+        form.addEventListener('submit', async e => {
+            e.preventDefault();
+            submitBtn.innerText = 'Transmitting...';
+            submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+            const payload = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                projectType: document.getElementById('projectType').value,
+                budget: document.getElementById('budget').value,
+                details: document.getElementById('details').value
+            };
+
+            try {
+                const response = await fetch(scriptURL, {
+                    method: 'POST',
+                    mode: 'no-cors', // Bypasses CORS policy issues in standard GAS setup
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                // Since mode is no-cors, response is opaque. We assume success if no JS error.
+                formStatus.innerText = "Order successfully transmitted!";
+                formStatus.className = "text-center text-sm mt-4 text-green-400 block";
+                form.reset();
+            } catch (error) {
+                console.error('Error!', error.message);
+                formStatus.innerText = "Transmission failed. Try again.";
+                formStatus.className = "text-center text-sm mt-4 text-red-400 block";
+            } finally {
+                submitBtn.innerText = 'Submit Order';
+                submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        });
+
+        // ==========================================
+        // 2. Multilingual Dictionary & Logic
+        // ==========================================
+        const dictionary = {
+            "en": {
+                "nav_home": "Home", "nav_services": "Services", "nav_pricing": "Pricing", "nav_login": "Login",
+                "hero_title": "Building <span class='gradient-text'>Immersive</span> Digital Realities",
+                "hero_sub": "Expert full-stack development & 3D UI/UX design for international brands. Elevate your web presence today.",
+                "hero_cta": "Start Your Project",
+                "services_title": "My Expertise",
+                "srv_1_title": "Landing Pages", "srv_1_desc": "High-converting, ultra-fast landing pages tailored to your brand.",
+                "srv_2_title": "E-Commerce", "srv_2_desc": "Scalable online stores with seamless payment gateway integrations.",
+                "srv_3_title": "Custom Web Apps", "srv_3_desc": "Complex full-stack applications with robust backend architectures.",
+                "srv_4_title": "3D Portfolios", "srv_4_desc": "Interactive WebGL & Three.js experiences that stand out.",
+                "pricing_title": "Transparent Pricing",
+                "tier_1_name": "Basic", "tier_2_name": "Standard", "tier_3_name": "Premium",
+                "tier_2_badge": "MOST POPULAR", "tier_btn": "Select Plan",
+                "form_title": "Initiate Protocol", "form_sub": "Fill out your project details. Let's build something extraordinary.",
+                "lbl_name": "Name", "lbl_email": "Email", "lbl_type": "Project Type", "lbl_budget": "Budget Tier",
+                "lbl_details": "Project Details", "btn_submit": "Submit Order"
+            },
+            "fr": {
+                "nav_home": "Accueil", "nav_services": "Services", "nav_pricing": "Tarifs", "nav_login": "Connexion",
+                "hero_title": "Création de Réalités Numériques <span class='gradient-text'>Immersives</span>",
+                "hero_sub": "Développement full-stack expert et conception UI/UX 3D pour les marques internationales.",
+                "hero_cta": "Démarrer le Projet",
+                "services_title": "Mon Expertise",
+                "srv_1_title": "Pages de Destination", "srv_1_desc": "Pages ultra-rapides conçues pour la conversion.",
+                "srv_2_title": "E-Commerce", "srv_2_desc": "Boutiques en ligne évolutives avec paiements intégrés.",
+                "srv_3_title": "Applications Web", "srv_3_desc": "Applications full-stack avec des architectures robustes.",
+                "srv_4_title": "Portfolios 3D", "srv_4_desc": "Expériences WebGL et Three.js interactives.",
+                "pricing_title": "Tarification Transparente",
+                "tier_1_name": "Basique", "tier_2_name": "Standard", "tier_3_name": "Premium",
+                "tier_2_badge": "PLUS POPULAIRE", "tier_btn": "Sélectionner",
+                "form_title": "Initier le Protocole", "form_sub": "Remplissez les détails de votre projet. Créons l'extraordinaire.",
+                "lbl_name": "Nom", "lbl_email": "E-mail", "lbl_type": "Type de Projet", "lbl_budget": "Budget",
+                "lbl_details": "Détails du Projet", "btn_submit": "Soumettre"
+            },
+            "de": {
+                "nav_home": "Startseite", "nav_services": "Dienste", "nav_pricing": "Preise", "nav_login": "Anmelden",
+                "hero_title": "Aufbau <span class='gradient-text'>Immersiver</span> Digitaler Realitäten",
+                "hero_sub": "Experten-Full-Stack-Entwicklung & 3D UI/UX-Design für internationale Marken.",
+                "hero_cta": "Projekt Starten",
+                "services_title": "Meine Expertise",
+                "srv_1_title": "Landingpages", "srv_1_desc": "Hochkonvertierende, ultraschnelle Seiten.",
+                "srv_2_title": "E-Commerce", "srv_2_desc": "Skalierbare Online-Shops mit nahtloser Zahlung.",
+                "srv_3_title": "Web-Apps", "srv_3_desc": "Komplexe Full-Stack-Anwendungen.",
+                "srv_4_title": "3D-Portfolios", "srv_4_desc": "Interaktive WebGL & Three.js Erlebnisse.",
+                "pricing_title": "Transparente Preise",
+                "tier_1_name": "Basis", "tier_2_name": "Standard", "tier_3_name": "Premium",
+                "tier_2_badge": "AM BELIEBTESTEN", "tier_btn": "Plan Wählen",
+                "form_title": "Protokoll Initiieren", "form_sub": "Teilen Sie Projektdetails mit. Lassen Sie uns Großes bauen.",
+                "lbl_name": "Name", "lbl_email": "E-Mail", "lbl_type": "Projekttyp", "lbl_budget": "Budget",
+                "lbl_details": "Projektdetails", "btn_submit": "Auftrag Absenden"
+            },
+            "ja": {
+                "nav_home": "ホーム", "nav_services": "サービス", "nav_pricing": "価格", "nav_login": "ログイン",
+                "hero_title": "<span class='gradient-text'>没入型</span>デジタル現実の構築",
+                "hero_sub": "国際的ブランド向けの専門的なフルスタック開発と3D UI/UXデザイン。",
+                "hero_cta": "プロジェクトを開始",
+                "services_title": "私の専門知識",
+                "srv_1_title": "ランディングページ", "srv_1_desc": "コンバージョン率の高い超高速ページ。",
+                "srv_2_title": "Eコマース", "srv_2_desc": "シームレスな決済を備えた拡張可能なオンラインストア。",
+                "srv_3_title": "カスタムWebアプリ", "srv_3_desc": "堅牢なバックエンドを備えた複雑なアプリ。",
+                "srv_4_title": "3Dポートフォリオ", "srv_4_desc": "際立つインタラクティブなWebGL体験。",
+                "pricing_title": "透明な価格設定",
+                "tier_1_name": "基本", "tier_2_name": "標準", "tier_3_name": "プレミアム",
+                "tier_2_badge": "一番人気", "tier_btn": "プランを選択",
+                "form_title": "プロトコル開始", "form_sub": "プロジェクトの詳細を記入してください。",
+                "lbl_name": "名前", "lbl_email": "メール", "lbl_type": "プロジェクトタイプ", "lbl_budget": "予算",
+                "lbl_details": "プロジェクトの詳細", "btn_submit": "注文を送信"
+            },
+            "hi": {
+                "nav_home": "होम", "nav_services": "सेवाएं", "nav_pricing": "मूल्य निर्धारण", "nav_login": "लॉग इन",
+                "hero_title": "<span class='gradient-text'>इमर्सिव</span> डिजिटल वास्तविकताएं बनाना",
+                "hero_sub": "अंतरराष्ट्रीय ब्रांडों के लिए विशेषज्ञ फुल-स्टैक विकास और 3D UI/UX डिज़ाइन।",
+                "hero_cta": "प्रोजेक्ट शुरू करें",
+                "services_title": "मेरी विशेषज्ञता",
+                "srv_1_title": "लैंडिंग पेज", "srv_1_desc": "आपके ब्रांड के अनुरूप उच्च-परिवर्तित पेज।",
+                "srv_2_title": "ई-कॉमर्स", "srv_2_desc": "निर्बाध भुगतान एकीकरण के साथ ऑनलाइन स्टोर।",
+                "srv_3_title": "कस्टम वेब ऐप्स", "srv_3_desc": "मजबूत बैकएंड आर्किटेक्चर वाले फुल-स्टैक एप्लिकेशन।",
+                "srv_4_title": "3D पोर्टफोलियो", "srv_4_desc": "इंटरएक्टिव WebGL और Three.js अनुभव।",
+                "pricing_title": "पारदर्शी मूल्य निर्धारण",
+                "tier_1_name": "बेसिक", "tier_2_name": "स्टैंडर्ड", "tier_3_name": "प्रीमियम",
+                "tier_2_badge": "सबसे लोकप्रिय", "tier_btn": "प्लान चुनें",
+                "form_title": "प्रोटोकॉल आरंभ करें", "form_sub": "अपने प्रोजेक्ट का विवरण भरें।",
+                "lbl_name": "नाम", "lbl_email": "ईमेल", "lbl_type": "प्रोजेक्ट का प्रकार", "lbl_budget": "बजट",
+                "lbl_details": "प्रोजेक्ट विवरण", "btn_submit": "ऑर्डर सबमिट करें"
+            },
+            "ar": {
+                "nav_home": "الرئيسية", "nav_services": "خدماتنا", "nav_pricing": "الأسعار", "nav_login": "تسجيل الدخول",
+                "hero_title": "بناء حقائق رقمية <span class='gradient-text'>غامرة</span>",
+                "hero_sub": "تطوير متكامل وخبير وتصميم واجهة مستخدم ثلاثية الأبعاد للعلامات التجارية.",
+                "hero_cta": "ابدأ مشروعك",
+                "services_title": "خبراتي",
+                "srv_1_title": "صفحات الهبوط", "srv_1_desc": "صفحات سريعة للغاية مصممة لعلامتك التجارية.",
+                "srv_2_title": "التجارة الإلكترونية", "srv_2_desc": "متاجر عبر الإنترنت قابلة للتطوير مع بوابات دفع.",
+                "srv_3_title": "تطبيقات الويب", "srv_3_desc": "تطبيقات متكاملة مع هياكل خلفية قوية.",
+                "srv_4_title": "محافظ ثلاثية الأبعاد", "srv_4_desc": "تجارب WebGL تفاعلية بارزة.",
+                "pricing_title": "أسعار شفافة",
+                "tier_1_name": "أساسي", "tier_2_name": "قياسي", "tier_3_name": "مميز",
+                "tier_2_badge": "الأكثر شعبية", "tier_btn": "اختر الخطة",
+                "form_title": "بدء البروتوكول", "form_sub": "املأ تفاصيل مشروعك لنبني شيئًا استثنائيًا.",
+                "lbl_name": "الاسم", "lbl_email": "البريد الإلكتروني", "lbl_type": "نوع المشروع", "lbl_budget": "الميزانية",
+                "lbl_details": "تفاصيل المشروع", "btn_submit": "إرسال الطلب"
+            }
+        };
+
+        const langSwitcher = document.getElementById('lang-switcher');
+        langSwitcher.addEventListener('change', (e) => {
+            const lang = e.target.value;
+            document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+            
+            document.querySelectorAll('.i18n').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if(dictionary[lang][key]) {
+                    el.innerHTML = dictionary[lang][key];
+                }
+            });
+        });
+
+        // ==========================================
+        // 3. Three.js 3D Interactive Background
+        // ==========================================
+        const container = document.getElementById('webgl-container');
+        const scene = new THREE.Scene();
+        
+        // Setup Camera
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 2;
+
+        // Setup Renderer
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
+
+        // Create Particles Geometry
+        const geometry = new THREE.BufferGeometry();
+        const particlesCount = 1500;
+        const posArray = new Float32Array(particlesCount * 3);
+
+        for(let i = 0; i < particlesCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 5; // Spread particles
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+        // Material with Brand Color
+        const material = new THREE.PointsMaterial({
+            size: 0.005,
+            color: 0x8b5cf6, // Brand Purple
+            transparent: true,
+            opacity: 0.8,
+            blending: THREE.AdditiveBlending
+        });
+
+        // Create Mesh and Add to Scene
+        const particlesMesh = new THREE.Points(geometry, material);
+        scene.add(particlesMesh);
+
+        // Mouse Interactivity
+        let mouseX = 0;
+        let mouseY = 0;
+        document.addEventListener('mousemove', (event) => {
+            mouseX = event.clientX / window.innerWidth - 0.5;
+            mouseY = event.clientY / window.innerHeight - 0.5;
+        });
+
+        // Animation Loop
+        const clock = new THREE.Clock();
+        function animate() {
+            requestAnimationFrame(animate);
+            const elapsedTime = clock.getElapsedTime();
+            
+            // Auto rotation
+            particlesMesh.rotation.y = elapsedTime * 0.05;
+            
+            // Mouse interaction rotation
+            particlesMesh.rotation.x += mouseY * 0.01;
+            particlesMesh.rotation.y += mouseX * 0.01;
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Handle Window Resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // ==========================================
+        // 4. UI Logic (Modal Toggle)
+        // ==========================================
+        function toggleLoginModal() {
+            const modal = document.getElementById('loginModal');
+            modal.classList.toggle('hidden');
+        }
+    // ==========================================
+        // 4. UI Logic (Modal Toggle)
+        // ==========================================
+        function toggleLoginModal() {
+            const modal = document.getElementById('loginModal');
+            modal.classList.toggle('hidden');
+        }
+    </script>
+
+  <!-- ========================================== -->
+    <!-- FIREBASE CODE CONFIGURATION                -->
+    <!-- ========================================== -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    
+    <script>
+      const firebaseConfig = {
+  apiKey: "AIzaSyAHk-kaKvOLNwiXxUgSByHkKyupfm8GWEo",
+  authDomain: "unknown-76973.firebaseapp.com",
+  projectId: "unknown-76973",
+  storageBucket: "unknown-76973.firebasestorage.app",
+  messagingSenderId: "452115069055",
+  appId: "1:452115069055:web:4118bcafe86e752926e74a"
+};
+        
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        
+        const auth = firebase.auth();
+        const provider = new firebase.auth.GoogleAuthProvider();
+
+        document.getElementById('googleLoginBtn').addEventListener('click', () => {
+            auth.signInWithPopup(provider)
+            .then((result) => {
+                alert(`Welcome back, ${result.user.displayName}!`);
+                toggleLoginModal();
+            }).catch((error) => {
+                alert("Login failed: " + error.message);
+            });
+        });
+    </script>
+</body>
+</html>
