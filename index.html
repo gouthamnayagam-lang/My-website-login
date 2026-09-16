@@ -132,7 +132,7 @@
                 <!-- Basic -->
                 <div class="glass-panel p-10 rounded-2xl flex flex-col">
                     <h3 class="text-2xl font-bold mb-2 i18n" data-key="tier_1_name">Basic</h3>
-                    <div class="text-4xl font-bold mb-6">$199</div>
+                    <div class="text-3xl font-bold mb-6">₹16,500 / $199</div>
                     <ul class="text-gray-400 space-y-4 mb-8 flex-1">
                         <li>✓ 1-Page Landing Page</li>
                         <li>✓ Responsive Design</li>
@@ -146,7 +146,7 @@
                 <div class="glass-panel p-10 rounded-2xl flex flex-col border-brandPurple/50 relative transform md:-translate-y-4 shadow-[0_0_30px_rgba(139,92,246,0.1)]">
                     <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-brandBlue to-brandPurple text-xs font-bold px-3 py-1 rounded-full i18n" data-key="tier_2_badge">MOST POPULAR</div>
                     <h3 class="text-2xl font-bold mb-2 i18n" data-key="tier_2_name">Standard</h3>
-                    <div class="text-4xl font-bold mb-6">$599</div>
+                    <div class="text-3xl font-bold mb-6">₹49,500 / $599</div>
                     <ul class="text-gray-400 space-y-4 mb-8 flex-1">
                         <li>✓ Multi-page Website (Up to 5)</li>
                         <li>✓ CMS / Basic E-commerce</li>
@@ -159,7 +159,7 @@
                 <!-- Premium -->
                 <div class="glass-panel p-10 rounded-2xl flex flex-col">
                     <h3 class="text-2xl font-bold mb-2 i18n" data-key="tier_3_name">Premium</h3>
-                    <div class="text-4xl font-bold mb-6">$1199</div>
+                    <div class="text-3xl font-bold mb-6">₹99,500 / $1199</div>
                     <ul class="text-gray-400 space-y-4 mb-8 flex-1">
                         <li>✓ Custom Full-Stack Web App</li>
                         <li>✓ 3D / Three.js Integrations</li>
@@ -171,7 +171,6 @@
             </div>
         </div>
     </section>
-
     <!-- Order / Contact Page -->
     <section id="order" class="py-24 bg-darkBg/80 relative z-10 border-t border-white/5">
         <div class="max-w-3xl mx-auto px-6">
@@ -191,6 +190,25 @@
                         </div>
                     </div>
                     
+
+                    <!-- Phone Number with Country Code Dropdown -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-2">Phone Number / WhatsApp</label>
+                        <div class="flex gap-3">
+                            <select id="countryCode" class="bg-black/50 border border-gray-700 rounded-xl px-3 py-3 text-white focus:outline-none focus:border-brandPurple transition text-sm">
+                                <option value="+91">🇮🇳 +91 (India)</option>
+                                <option value="+1">🇺🇸 +1 (USA/Canada)</option>
+                                <option value="+44">🇬🇧 +44 (UK)</option>
+                                <option value="+971">🇦🇪 +971 (UAE)</option>
+                                <option value="+65">🇸🇬 +65 (Singapore)</option>
+                                <option value="+61">🇦🇺 +61 (Australia)</option>
+                                <option value="+81">🇯🇵 +81 (Japan)</option>
+                                <option value="+49">🇩🇪 +49 (Germany)</option>
+                                <option value="+33">🇫🇷 +33 (France)</option>
+                            </select>
+                            <input type="tel" id="phone" required placeholder="" class="w-full bg-black/50 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brandPurple transition">
+                        </div>
+                    </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-sm font-medium text-gray-400 mb-2 i18n" data-key="lbl_type">Project Type</label>
@@ -204,10 +222,10 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-400 mb-2 i18n" data-key="lbl_budget">Budget Tier</label>
                             <select id="budget" class="w-full bg-black/50 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brandPurple transition">
-                                <option>$199 - Basic</option>
-                                <option>$599 - Standard</option>
-                                <option>$1199 - Premium</option>
-                                <option>Custom (> $1500)</option>
+                                <option>₹16,500 / $199 - Basic</option>
+                                <option>₹49,500 / $599 - Standard</option>
+                                <option>₹99,500 / $1199 - Premium</option>
+                                <option>Custom (> ₹1,25,000 / $1500)</option>
                             </select>
                         </div>
                     </div>
@@ -246,7 +264,7 @@
         // ==========================================
         // 1. Google App Script Submission Logic
         // ==========================================
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbw6QsNQhcPaWGmkL0-gyO3afyVm6wVaJqlFRn8ba720nL6NhxwefbO25D2qFXdKygvO/exec'; // <-- PASTE APP SCRIPT URL HERE
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzDEJPWnDonEfMnY-gEvIUbh5PTv1r62SecOMhoY-zXw2Zx14o-zr2cm_kjHmyHK-qDDA/exec'; // <-- PASTE APP SCRIPT URL HERE
         const form = document.getElementById('orderForm');
         const submitBtn = document.getElementById('submitBtn');
         const formStatus = document.getElementById('formStatus');
@@ -256,13 +274,18 @@
             submitBtn.innerText = 'Transmitting...';
             submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
 
+            // Ithu dharan pudhusa add panna vendiya line (Country code + Phone):
+            const fullPhone = document.getElementById('countryCode').value + " " + document.getElementById('phone').value;
+
             const payload = {
                 name: document.getElementById('name').value,
                 email: document.getElementById('email').value,
+                phone: fullPhone, // <-- Ithu pudhusa serthukonga
                 projectType: document.getElementById('projectType').value,
                 budget: document.getElementById('budget').value,
                 details: document.getElementById('details').value
             };
+
 
             try {
                 const response = await fetch(scriptURL, {
